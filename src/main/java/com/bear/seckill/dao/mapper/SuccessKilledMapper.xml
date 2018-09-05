@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bear.seckill.dao.si.SuccessKilledMapper">
+	<resultMap id="BaseResultMap"
+		type="com.bear.seckill.entity.SuccessKilled">
+		<id column="seckill_id" jdbcType="BIGINT" property="seckillId" />
+		<id column="user_phone" jdbcType="BIGINT" property="userPhone" />
+		<result column="state" jdbcType="TINYINT" property="state" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		seckill_id, user_phone, state, create_time
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="map"
+		resultType="SuccessKilled">
+		select
+		sk.seckill_id,
+		sk.user_phone,
+		sk.state,
+		s.name
+		"seckill.name",
+		s.number "seckill.number",
+		s.start_time
+		"seckill.start_time",
+		s.end_time "seckill.end_time",
+		s.creat_time
+		"seckill.creat_time"
+		from
+		success_killed sk
+		inner join
+		seckill s
+		on
+		sk.seckill_id=s.seckill_id
+		where sk.seckill_id = #{seckillId,jdbcType=BIGINT}
+		and sk.user_phone =
+		#{userPhone,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="map">
+		delete from
+		success_killed
+		where seckill_id = #{seckillId,jdbcType=BIGINT}
+		and
+		user_phone = #{userPhone,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert"
+		parameterType="com.bear.seckill.entity.SuccessKilled">
+		insert into success_killed (seckill_id, user_phone,
+		state,
+		create_time)
+		values (#{seckillId,jdbcType=BIGINT},
+		#{userPhone,jdbcType=BIGINT},
+		#{state,jdbcType=TINYINT},
+		#{createTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.bear.seckill.entity.SuccessKilled">
+		insert into success_killed
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="seckillId != null">
+				seckill_id,
+			</if>
+			<if test="userPhone != null">
+				user_phone,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="seckillId != null">
+				#{seckillId,jdbcType=BIGINT},
+			</if>
+			<if test="userPhone != null">
+				#{userPhone,jdbcType=BIGINT},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=TINYINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.bear.seckill.entity.SuccessKilled">
+		update success_killed
+		<set>
+			<if test="state != null">
+				state = #{state,jdbcType=TINYINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where seckill_id = #{seckillId,jdbcType=BIGINT}
+		and user_phone =
+		#{userPhone,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.bear.seckill.entity.SuccessKilled">
+		update success_killed
+		set state =
+		#{state,jdbcType=TINYINT},
+		create_time =
+		#{createTime,jdbcType=TIMESTAMP}
+		where seckill_id =
+		#{seckillId,jdbcType=BIGINT}
+		and user_phone =
+		#{userPhone,jdbcType=BIGINT}
+	</update>
+</mapper>
