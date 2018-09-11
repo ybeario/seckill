@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=utf-8&SSL=false
     username: root
     password: 123
     tomcat:
@@ -13,3 +13,5 @@ logging:
   level:
     com.bear.seckill: debug
   file: log/seckill.log
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bear.seckill.dao.si.SeckillMapper">
+<mapper namespace="com.bear.seckill.dao.si.SeckillDao">
 	<resultMap id="BaseResultMap"
 		type="com.bear.seckill.entity.Seckill">
 		<id column="seckill_id" jdbcType="BIGINT" property="seckillId" />
@@ -10,12 +10,20 @@
 			property="startTime" />
 		<result column="end_time" jdbcType="TIMESTAMP"
 			property="endTime" />
-		<result column="creat_time" jdbcType="TIMESTAMP"
-			property="creatTime" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		seckill_id, name, number, start_time, end_time, creat_time
+		seckill_id, name, number, start_time, end_time, create_time
 	</sql>
+	<select id="queryAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from seckill
+		order by
+		create_time desc
+		limit #{offset}, #{limit}
+	</select>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
@@ -31,13 +39,13 @@
 	<insert id="insert"
 		parameterType="com.bear.seckill.entity.Seckill">
 		insert into seckill (seckill_id, name, number,
-		start_time, end_time, creat_time
+		start_time, end_time, create_time
 		)
 		values (#{seckillId,jdbcType=BIGINT},
 		#{name,jdbcType=VARCHAR},
 		#{number,jdbcType=INTEGER},
 		#{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
-		#{creatTime,jdbcType=TIMESTAMP}
+		#{createTime,jdbcType=TIMESTAMP}
 		)
 	</insert>
 	<insert id="insertSelective"
@@ -59,8 +67,8 @@
 			<if test="endTime != null">
 				end_time,
 			</if>
-			<if test="creatTime != null">
-				creat_time,
+			<if test="createTime != null">
+				create_time,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -79,8 +87,8 @@
 			<if test="endTime != null">
 				#{endTime,jdbcType=TIMESTAMP},
 			</if>
-			<if test="creatTime != null">
-				#{creatTime,jdbcType=TIMESTAMP},
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
 			</if>
 		</trim>
 	</insert>
@@ -100,8 +108,8 @@
 			<if test="endTime != null">
 				end_time = #{endTime,jdbcType=TIMESTAMP},
 			</if>
-			<if test="creatTime != null">
-				creat_time = #{creatTime,jdbcType=TIMESTAMP},
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
 			</if>
 		</set>
 		where seckill_id = #{seckillId,jdbcType=BIGINT}
@@ -115,8 +123,8 @@
 		#{startTime,jdbcType=TIMESTAMP},
 		end_time =
 		#{endTime,jdbcType=TIMESTAMP},
-		creat_time =
-		#{creatTime,jdbcType=TIMESTAMP}
+		create_time =
+		#{createTime,jdbcType=TIMESTAMP}
 		where seckill_id =
 		#{seckillId,jdbcType=BIGINT}
 	</update>
@@ -137,13 +145,4 @@
 		and
 		number>0
 	</update>
-	<select id="queryAll" resultType="com.bear.seckill.entity.Seckill">
-		select
-		<include refid="Base_Column_List"></include>
-		from
-		seckill
-		order by
-		creat_time desc
-		limit #{offset}, #{limit}
-	</select>
 </mapper>

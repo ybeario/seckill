@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bear.seckill.dao.si.SuccessKilledMapper">
+<mapper namespace="com.bear.seckill.dao.si.SuccessKilledDao">
 	<resultMap id="BaseResultMap"
 		type="com.bear.seckill.entity.SuccessKilled">
 		<id column="seckill_id" jdbcType="BIGINT" property="seckillId" />
@@ -13,26 +13,37 @@
 		seckill_id, user_phone, state, create_time
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="map"
-		resultType="SuccessKilled">
+		resultMap="BaseResultMap">
 		select
-		sk.seckill_id,
-		sk.user_phone,
+		<include refid="Base_Column_List" />
+		from success_killed
+		where seckill_id = #{seckillId,jdbcType=BIGINT}
+		and
+		user_phone = #{userPhone,jdbcType=BIGINT}
+	</select>
+	<select id="queryByIdWithSeckill"
+		resultType="com.bear.seckill.entity.SuccessKilled">
+		select
+		sk.seckill_id seckillId,
+		sk.user_phone userPhone,
 		sk.state,
-		s.name
-		"seckill.name",
-		s.number "seckill.number",
-		s.start_time
-		"seckill.start_time",
-		s.end_time "seckill.end_time",
-		s.creat_time
-		"seckill.creat_time"
+		sk.create_time createTime,
+		s.name "seckill.name",
+		s.number
+		"seckill.number",
+		s.start_time "seckill.start_time",
+		s.end_time
+		"seckill.end_time",
+		s.create_time "seckill.create_time"
 		from
-		success_killed sk
+		success_killed
+		sk
 		inner join
 		seckill s
 		on
 		sk.seckill_id=s.seckill_id
-		where sk.seckill_id = #{seckillId,jdbcType=BIGINT}
+		where sk.seckill_id =
+		#{seckillId,jdbcType=BIGINT}
 		and sk.user_phone =
 		#{userPhone,jdbcType=BIGINT}
 	</select>
@@ -52,6 +63,12 @@
 		#{userPhone,jdbcType=BIGINT},
 		#{state,jdbcType=TINYINT},
 		#{createTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSuccessKilled">
+		insert ignore into success_killed (seckill_id,
+		user_phone,state)
+		values (#{seckillId,jdbcType=BIGINT},
+		#{userPhone,jdbcType=BIGINT},0)
 	</insert>
 	<insert id="insertSelective"
 		parameterType="com.bear.seckill.entity.SuccessKilled">

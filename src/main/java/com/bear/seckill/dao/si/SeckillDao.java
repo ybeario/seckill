@@ -3,9 +3,13 @@ package com.bear.seckill.dao.si;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.bear.seckill.entity.Seckill;
 
-public interface SeckillMapper {
+@Mapper
+public interface SeckillDao {
 	int deleteByPrimaryKey(Long seckillId);
 
 	int insert(Seckill record);
@@ -18,7 +22,7 @@ public interface SeckillMapper {
 
 	int updateByPrimaryKey(Seckill record);
 
-	int reduceNumber(long seckillId, Date killTime);
+	int reduceNumber(@Param("seckillId") Long seckillId, @Param("killTime") Date killTime);
 
-	List<Seckill> queryAll(int offset, int limit);
+	List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit);
 }

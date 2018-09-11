@@ -13,7 +13,7 @@ public class Seckill {
 
     private Date endTime;
 
-    private Date creatTime;
+    private Date createTime;
 
     public Long getSeckillId() {
         return seckillId;
@@ -56,11 +56,11 @@ public class Seckill {
     }
 
     public Date getCreatTime() {
-        return creatTime;
+        return createTime;
     }
 
     public void setCreatTime(Date creatTime) {
-        this.creatTime = creatTime;
+        this.createTime = creatTime;
     }
 
     @Override
@@ -101,13 +101,12 @@ public class Seckill {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", seckillId=").append(seckillId);
+        sb.append("seckillId=").append(seckillId);
         sb.append(", name=").append(name);
         sb.append(", number=").append(number);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
-        sb.append(", creatTime=").append(creatTime);
+        sb.append(", creatTime=").append(createTime);
         sb.append("]");
         return sb.toString();
     }

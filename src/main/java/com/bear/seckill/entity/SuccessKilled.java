@@ -89,8 +89,7 @@ public class SuccessKilled {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", seckillId=").append(seckillId);
+        sb.append("seckillId=").append(seckillId);
         sb.append(", userPhone=").append(userPhone);
         sb.append(", state=").append(state);
         sb.append(", createTime=").append(createTime);
