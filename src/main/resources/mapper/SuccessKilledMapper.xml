@@ -8,6 +8,19 @@
 		<result column="state" jdbcType="TINYINT" property="state" />
 		<result column="create_time" jdbcType="TIMESTAMP"
 			property="createTime" />
+		<association property="seckill" resultMap="SeckillResultMap"  column="seckillId" columnPrefix="s_"></association>
+	</resultMap>
+	<resultMap id="SeckillResultMap"
+		type="com.bear.seckill.entity.Seckill">
+		<id column="seckill_id" jdbcType="BIGINT" property="seckillId" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="number" jdbcType="INTEGER" property="number" />
+		<result column="start_time" jdbcType="TIMESTAMP"
+			property="startTime" />
+		<result column="end_time" jdbcType="TIMESTAMP"
+			property="endTime" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		seckill_id, user_phone, state, create_time
@@ -22,19 +35,19 @@
 		user_phone = #{userPhone,jdbcType=BIGINT}
 	</select>
 	<select id="queryByIdWithSeckill"
-		resultType="com.bear.seckill.entity.SuccessKilled">
+		resultMap="BaseResultMap">
 		select
-		sk.seckill_id seckillId,
-		sk.user_phone userPhone,
+		sk.seckill_id  seckill_id,
+		sk.user_phone  user_phone,
 		sk.state,
-		sk.create_time createTime,
-		s.name "seckill.name",
-		s.number
-		"seckill.number",
-		s.start_time "seckill.start_time",
-		s.end_time
-		"seckill.end_time",
-		s.create_time "seckill.create_time"
+		sk.create_time as create_time,
+		s.seckill_id s_seckill_id,
+		s.name  s_name,
+		s.number  s_number,
+		s.start_time s_start_time,
+		s.end_time 
+		s_end_time,
+		s.create_time  s_create_time
 		from
 		success_killed
 		sk
@@ -42,7 +55,8 @@
 		seckill s
 		on
 		sk.seckill_id=s.seckill_id
-		where sk.seckill_id =
+		where
+		sk.seckill_id =
 		#{seckillId,jdbcType=BIGINT}
 		and sk.user_phone =
 		#{userPhone,jdbcType=BIGINT}
