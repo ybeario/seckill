@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>秒杀列表页</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 引入 Bootstrap -->
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link
+	href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+<body>
+	<!-- 页面显示部分 -->
+	<div class="container">
+		<div class="panel panel-default">
+			<div class="panel-heading text-center">
+				<h2>秒杀列表</h2>
+			</div>
+			<div class="panel-body">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>库存</th>
+							<th>开始时间</th>
+							<th>结束时间</th>
+							<th>创建时间</th>
+							<th>详情页</th>
+						</tr>
+					</thead>
+					<tr th:each="sk:${list} ">
+						<td th:text="${sk.name}"></td>
+						<td th:text="${sk.number}"></td>
+						<td th:text="${#dates.format(sk.startTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+						<td th:text="${#dates.format(sk.endTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+						<td th:text="${#dates.format(sk.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+						<td><a class="btn btn-info"
+							th:href="@{${sk.seckillId}+'/detail'}" target="_blank">link</a></td>
+						<!-- th:href="@{'~/'+${sk.seckillId}+'/detail'}"  ~/返回上一层，相对路径的问题 -->
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script
+	src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</html>

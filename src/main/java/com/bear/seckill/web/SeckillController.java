@@ -25,7 +25,6 @@ import com.bear.seckill.entity.Seckill;
 import com.bear.seckill.enums.SeckillStatEnum;
 import com.bear.seckill.exception.RepeatKillException;
 import com.bear.seckill.exception.SeckillCloseException;
-import com.bear.seckill.exception.SeckillException;
 import com.bear.seckill.service.SeckillService;
 
 /**
@@ -40,7 +39,7 @@ public class SeckillController {
 	@Autowired
 	private SeckillService service;
 
-	@RequestMapping(name = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
 		List<Seckill> seckillList = service.getSeckillList();
 		model.addAttribute("list", seckillList);
@@ -49,6 +48,7 @@ public class SeckillController {
 
 	@GetMapping("/{seckillId}/detail")
 	public String detail(@PathVariable("seckillId") Long seckillId, Model model) {
+
 		if (seckillId == null) {
 			return "redirect:/seckill/list";
 		}
@@ -61,7 +61,7 @@ public class SeckillController {
 	}
 
 	// ajax json
-	@PostMapping(name = "/{seckillId}/exposer", produces = { "application/json;charset=UTF-8" })
+	@PostMapping(value = "/{seckillId}/exposer", produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	public SeckillResult<Exposer> exposer(@PathParam("seckillId") Long seckillId) {
 		SeckillResult<Exposer> result;
@@ -76,7 +76,7 @@ public class SeckillController {
 
 	}
 
-	@PostMapping(name = "/{seckillId}/{md5}/excution", produces = { "application/json;charset=UTF-8" })
+	@PostMapping(value = "/{seckillId}/{md5}/excution", produces = { "application/json;charset=UTF-8" })
 	public SeckillResult<SeckillExecution> execute(@PathVariable("seckillId") Long seckillId,
 			@PathVariable("md5") String md5, @CookieValue(value = "killPhone", required = false) Long userPhone) {
 		if (userPhone == null) {
@@ -97,6 +97,7 @@ public class SeckillController {
 		}
 	}
 
+	@GetMapping("/time/now")
 	public SeckillResult<Long> time() {
 		Date now = new Date();
 		return new SeckillResult<Long>(true, now.getTime());

@@ -9,6 +9,14 @@ spring:
       max-wait: 1000
       max-idle: 20
       min-idle: 10
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/views/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html; charset=utf-8
 logging:
   level:
     com.bear.seckill: debug
