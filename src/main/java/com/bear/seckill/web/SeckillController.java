@@ -43,7 +43,7 @@ public class SeckillController {
 	public String list(Model model) {
 		List<Seckill> seckillList = service.getSeckillList();
 		model.addAttribute("list", seckillList);
-		return "list";
+		return "views/list";
 	}
 
 	@GetMapping("/{seckillId}/detail")
@@ -57,7 +57,7 @@ public class SeckillController {
 			return "forward:/seckill/list";
 		}
 		model.addAttribute("seckill", seckill);
-		return "detail";
+		return "views/detail";
 	}
 
 	// ajax json

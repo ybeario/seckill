@@ -11,15 +11,14 @@ spring:
       min-idle: 10
   thymeleaf:
     cache: false
-    prefix: classpath:/templates/views/
-    suffix: .html
-    mode: HTML5
     encoding: UTF-8
-    servlet:
-      content-type: text/html; charset=utf-8
+  mvc:
+    static-path-pattern: /**
 logging:
   level:
     com.bear.seckill: debug
   file: log/seckill.log
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+server:
+  port: 8080
