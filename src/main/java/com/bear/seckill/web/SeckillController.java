@@ -3,8 +3,6 @@ package com.bear.seckill.web;
 import java.util.Date;
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +61,7 @@ public class SeckillController {
 	// ajax json
 	@PostMapping(value = "/{seckillId}/exposer", produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
-	public SeckillResult<Exposer> exposer(@PathParam("seckillId") Long seckillId) {
+	public SeckillResult<Exposer> exposer(@PathVariable("seckillId") Long seckillId) {
 		SeckillResult<Exposer> result;
 		try {
 			Exposer exposer = service.exportSeckillUrl(seckillId);
@@ -77,6 +75,7 @@ public class SeckillController {
 	}
 
 	@PostMapping(value = "/{seckillId}/{md5}/excution", produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
 	public SeckillResult<SeckillExecution> execute(@PathVariable("seckillId") Long seckillId,
 			@PathVariable("md5") String md5, @CookieValue(value = "killPhone", required = false) Long userPhone) {
 		if (userPhone == null) {
@@ -87,17 +86,18 @@ public class SeckillController {
 			return new SeckillResult<SeckillExecution>(true, execution);
 		} catch (SeckillCloseException e) {
 			SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStatEnum.END);
-			return new SeckillResult<SeckillExecution>(false, seckillExecution);
+			return new SeckillResult<SeckillExecution>(true, seckillExecution);
 		} catch (RepeatKillException e) {
 			SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStatEnum.REPEAT_KILL);
-			return new SeckillResult<SeckillExecution>(false, seckillExecution);
+			return new SeckillResult<SeckillExecution>(true, seckillExecution);
 		} catch (Exception e) {
 			SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStatEnum.INNER_ERROR);
-			return new SeckillResult<SeckillExecution>(false, seckillExecution);
+			return new SeckillResult<SeckillExecution>(true, seckillExecution);
 		}
 	}
 
 	@GetMapping("/time/now")
+	@ResponseBody
 	public SeckillResult<Long> time() {
 		Date now = new Date();
 		return new SeckillResult<Long>(true, now.getTime());
