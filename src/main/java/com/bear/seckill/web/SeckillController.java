@@ -71,7 +71,6 @@ public class SeckillController {
 			result = new SeckillResult<Exposer>(false, e.getMessage());
 		}
 		return result;
-
 	}
 
 	@PostMapping(value = "/{seckillId}/{md5}/excution", produces = { "application/json;charset=UTF-8" })

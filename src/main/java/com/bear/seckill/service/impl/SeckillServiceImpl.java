@@ -34,6 +34,7 @@ public class SeckillServiceImpl implements SeckillService {
 	@Autowired
 	private SuccessKilledDao successKilledDao;
 
+
 	private static final String salt = "fhewi372934920u#￥%……*&&……（%#fngl";
 
 	@Override
@@ -48,6 +49,10 @@ public class SeckillServiceImpl implements SeckillService {
 
 	@Override
 	public Exposer exportSeckillUrl(long seckillId) {
+		/**
+		 * 优化点：
+		 * 缓存优化
+		 */
 		Seckill seckill = seckillDao.selectByPrimaryKey(seckillId);
 		if (seckill == null) {
 			return new Exposer(false, seckillId);

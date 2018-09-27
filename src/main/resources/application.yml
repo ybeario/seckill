@@ -14,6 +14,17 @@ spring:
     encoding: UTF-8
   mvc:
     static-path-pattern: /**
+  redis:
+    host: 127.0.0.1
+    timeout: 0
+    port: 6379
+    password: null
+    jedis:
+      pool:
+        max-active: 100
+        max-idle: 10
+        min-idle: 0
+        max-wait: 100000
 logging:
   level:
     com.bear.seckill: debug
