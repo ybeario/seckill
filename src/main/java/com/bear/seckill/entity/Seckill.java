@@ -3,6 +3,7 @@ package com.bear.seckill.entity;
 import java.util.Date;
 
 public class Seckill {
+
 	private Long seckillId;
 
 	private String name;

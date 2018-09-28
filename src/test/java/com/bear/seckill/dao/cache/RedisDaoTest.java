@@ -28,15 +28,14 @@ public class RedisDaoTest {
 	@Test
 	public void testSeckill() {
 		Seckill seckill = redisDao.getSeckill(seckillId);
-		if (seckill==null) {
-			seckill=seckillDao.selectByPrimaryKey(seckillId);
-			if (seckill!=null) {
+		System.out.println(seckill);
+		if (seckill == null) {
+			seckill = seckillDao.selectByPrimaryKey(seckillId);
+			if (seckill != null) {
 				String result = redisDao.putSeckill(seckill);
-				System.out.println(result+":insert into Redis"+redisDao.getSeckill(seckillId));
+				System.out.println(result + ":insert into Redis" + redisDao.getSeckill(seckillId));
 			}
 		}
-		
-		System.out.println(seckill);
 	}
 
 }

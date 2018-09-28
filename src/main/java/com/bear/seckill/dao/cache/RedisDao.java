@@ -5,9 +5,15 @@ package com.bear.seckill.dao.cache;
 * 类说明
 */
 
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.bear.seckill.entity.Seckill;
@@ -21,10 +27,12 @@ import redis.clients.jedis.JedisPool;
 @Component
 public class RedisDao {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	@Autowired
-	private JedisPool jedisPool;
-
-	private RuntimeSchema<Seckill> schema = RuntimeSchema.createFrom(Seckill.class);
+	// @Autowired
+	// private JedisPool jedisPool;
+	@Resource
+	private RedisTemplate<String, Seckill> redisTemplate;
+	// private RuntimeSchema<Seckill> schema =
+	// RuntimeSchema.createFrom(Seckill.class);
 
 	/**
 	 * 反序列化的过程
@@ -33,23 +41,29 @@ public class RedisDao {
 	 * @return
 	 */
 	public Seckill getSeckill(long seckillId) {
-		try {
-			Jedis jedis = jedisPool.getResource();
-			try {
-				String key = "seckill:" + seckillId;
-				byte[] bytes = jedis.get(key.getBytes());
-				if (bytes != null) {
-					Seckill seckill = schema.newMessage();
-					ProtostuffIOUtil.mergeFrom(bytes, seckill, schema);
-					return seckill;
-				}
-			} finally {
-				jedis.close();
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+		String key = "seckill:" + seckillId;
+		Seckill seckill = redisTemplate.opsForValue().get(key);
+		if (seckill!=null) {
+			logger.info("从Redis中获取数据：" + seckill.toString());
 		}
-		return null;
+		return seckill;
+		// try {
+		// Jedis jedis = jedisPool.getResource();
+		// try {
+		// String key = "seckill:" + seckillId;
+		// byte[] bytes = jedis.get(key.getBytes());
+		// if (bytes != null) {
+		// Seckill seckill = schema.newMessage();
+		// ProtostuffIOUtil.mergeFrom(bytes, seckill, schema);
+		// return seckill;
+		// }
+		// } finally {
+		// jedis.close();
+		// }
+		// } catch (Exception e) {
+		// logger.error(e.getMessage(), e);
+		// }
+		// return null;
 	}
 
 	/**
@@ -59,21 +73,27 @@ public class RedisDao {
 	 * @return
 	 */
 	public String putSeckill(Seckill seckill) {
-		try {
-			Jedis jedis = jedisPool.getResource();
-			try {
-				String key = "seckill:" + seckill.getSeckillId();
-				byte[] bytes = ProtostuffIOUtil.toByteArray(seckill, schema, LinkedBuffer.allocate());
-				int timeout = 60 * 60;
-				String result = jedis.setex(key.getBytes(), timeout, bytes);
-				return result;
-			} finally {
-				jedis.close();
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
+		String key = "seckill:" + seckill.getSeckillId();
+		String result;
+		redisTemplate.opsForValue().set(key, seckill, 30, TimeUnit.MINUTES);
+		logger.info("向redis中插入数据："+seckill);
+		result = "OK";
+		// try {
+		// Jedis jedis = jedisPool.getResource();
+		// try {
+		// String key = "seckill:" + seckill.getSeckillId();
+		// byte[] bytes = ProtostuffIOUtil.toByteArray(seckill, schema,
+		// LinkedBuffer.allocate());
+		// int timeout = 600;
+		// String result = jedis.setex(key.getBytes(), timeout, bytes);
+		// return result;
+		// } finally {
+		// jedis.close();
+		// }
+		// } catch (Exception e) {
+		// logger.error(e.getMessage(), e);
+		// }
+		return result;
 	}
 
 }

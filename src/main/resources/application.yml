@@ -16,9 +16,15 @@ spring:
     static-path-pattern: /**
   redis:
     host: 127.0.0.1
-    timeout: 0
+    timeout: 100
     port: 6379
     password: null
+    lettuce:
+      pool:
+        max-wait: 10
+        max-active: 100
+        max-idle: 10
+        min-idle: 0
     jedis:
       pool:
         max-active: 100
