@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import com.bear.seckill.dao.cache.RedisDao;
 import com.bear.seckill.dao.si.SeckillDao;
 import com.bear.seckill.dao.si.SuccessKilledDao;
 import com.bear.seckill.dto.Exposer;
@@ -33,7 +34,8 @@ public class SeckillServiceImpl implements SeckillService {
 	private SeckillDao seckillDao;
 	@Autowired
 	private SuccessKilledDao successKilledDao;
-
+	@Autowired
+	private RedisDao redisDao;
 
 	private static final String salt = "fhewi372934920u#￥%……*&&……（%#fngl";
 
@@ -50,12 +52,19 @@ public class SeckillServiceImpl implements SeckillService {
 	@Override
 	public Exposer exportSeckillUrl(long seckillId) {
 		/**
-		 * 优化点：
-		 * 缓存优化
+		 * 优化点： 缓存优化
 		 */
-		Seckill seckill = seckillDao.selectByPrimaryKey(seckillId);
+		// 1.访问redis
+		Seckill seckill = redisDao.getSeckill(seckillId);
 		if (seckill == null) {
-			return new Exposer(false, seckillId);
+			// 2.访问数据库
+			seckill = seckillDao.selectByPrimaryKey(seckillId);
+			if (seckill == null) {
+				return new Exposer(false, seckillId);
+			} else {
+				// 3.放入redis
+				redisDao.putSeckill(seckill);
+			}
 		}
 		Date startTime = seckill.getStartTime();
 		Date endTime = seckill.getEndTime();
@@ -75,7 +84,7 @@ public class SeckillServiceImpl implements SeckillService {
 	}
 
 	@Override
-	@Transactional //必须完整执行整个流程，必须采用事务，出现问题必须回滚
+	@Transactional // 必须完整执行整个流程，必须采用事务，出现问题必须回滚
 	public SeckillExecution excuteSeckill(long seckillId, long userPhone, String md5)
 			throws SeckillException, SeckillCloseException, RepeatKillException {
 		if (md5 == null || !md5.equals(getMD5(seckillId))) {
@@ -83,18 +92,22 @@ public class SeckillServiceImpl implements SeckillService {
 		}
 		Date killTime = new Date();
 		try {
-			int updateCount = seckillDao.reduceNumber(seckillId, killTime);
-			if (updateCount <= 0) {
-				throw new SeckillCloseException("seckill is closed"); // 数据库减少库存失败
+			// 插入购买明细
+			int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+			if (insertCount <= 0) {
+				throw new RepeatKillException("seckill repeated");
 			} else {
-				int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
-				if (insertCount <= 0) {
-					throw new RepeatKillException("seckill repeated");
+				// 减库存，热点商品竞争
+				int updateCount = seckillDao.reduceNumber(seckillId, killTime);
+				if (updateCount <= 0) {
+					throw new SeckillCloseException("seckill is closed"); // 数据库减少库存失败
 				} else {
+					// 秒杀成功
 					SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
 					return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
 				}
 			}
+
 		} catch (SeckillCloseException e) {
 			throw e;
 		} catch (RepeatKillException e) {

@@ -23,7 +23,7 @@ public class RedisDaoTest {
 	@Autowired
 	private SeckillDao seckillDao;
 
-	private long seckillId = 1002;
+	private long seckillId = 1001;
 
 	@Test
 	public void testSeckill() {

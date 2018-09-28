@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bear.seckill.dto.Exposer;
@@ -47,11 +46,11 @@ public class SeckillServiceTest {
 
 	@Test
 	public void testExportSeckillUrl() {
-		long seckillId = 1001;
+		long seckillId = 1002;
 		Exposer exposer = seckillService.exportSeckillUrl(seckillId);
 		if (exposer.isExposed()) {
 			logger.info("exposer={}", exposer);
-			long userPhone = 18883285384l;
+			long userPhone = 15828224726l;
 			String md5 = exposer.getMd5();
 			try {
 				SeckillExecution seckillExecution = seckillService.excuteSeckill(seckillId, userPhone, md5);
